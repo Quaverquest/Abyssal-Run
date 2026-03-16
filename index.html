@@ -619,14 +619,20 @@ function showSaveCodeAndQuit(){
   save.lastWeapons=ownedWeapons.slice();
   save.lastHotbar=hotbarWeapons.slice();
   save.char=save.lastChar;
+  const p=gs.player;
   save._runState={
-    floor:gs.floor,gold:gs.gold,score:gs.score,kills:gs.kills,
-    bossesDefeated:gs.bossesDefeated,
-    playerHp:gs.player?.hp,playerMaxHp:gs.player?.maxHp,
-    playerAtk:gs.player?.atk,playerDef:gs.player?.def,playerMp:gs.player?.mp,
-    ownedWeapons:ownedWeapons.slice(),hotbarWeapons:hotbarWeapons.slice(),
+    floor:gs.floor, gold:gs.gold, score:gs.score,
+    kills:gs.kills, bossesDefeated:gs.bossesDefeated,
+    playerHp:p?.hp,      playerMaxHp:p?.maxHp,
+    playerAtk:p?.atk,    playerDef:p?.def,
+    playerSpd:p?.spd,    playerMp:p?.mp,
+    playerMaxMp:p?.maxMp,
+    playerCrit:p?.critChance||0,
+    playerLifesteal:p?.lifesteal||0,
+    ownedWeapons:ownedWeapons.slice(),
+    hotbarWeapons:hotbarWeapons.slice(),
     equippedAbilities:(equippedAbilities||[]).slice(),
-    charId:gs.playerCharId||selectedChar,difficulty,
+    charId:gs.playerCharId||selectedChar, difficulty,
   };
   writeSave();
   const code=encodeRunCode(_accounts[activeSaveSlot]);
@@ -698,19 +704,90 @@ function _doImportCode(){
   const err=document.getElementById('_importErr');
   if(!ta)return;
   const code=ta.value.trim();
-  const data=decodeRunCode(code);
-  if(!data){if(err)err.textContent='❌ Invalid code — copy the full AR2:... text';return;}
-  let targetSlot=_accounts.findIndex(a=>!a.data);
+  const slotData=decodeRunCode(code);
+  if(!slotData||!slotData.data){
+    if(err)err.textContent='❌ Invalid code — copy the full AR2:... text';return;
+  }
+  // Find first empty slot, else overwrite slot 0
+  let targetSlot=_accounts.findIndex(a=>!a.username);
   if(targetSlot<0)targetSlot=0;
-  _accounts[targetSlot]=data;
+  _accounts[targetSlot]=slotData;
   _saveAccounts(_accounts);
   _accounts=_loadAccounts();
   document.getElementById('_importCodeOv').remove();
-  showNotif('✅ Save imported to slot '+(targetSlot+1)+'!','#10b981');
-  buildSaveGrid();
+  // Load slot and jump straight into game
+  _loadSlot(targetSlot);
+  _launchFromSlot();
 }
 
 function restoreRunToPending(){}
+
+// Launch from a loaded slot — restores full run if _runState exists, else charSelect
+function _launchFromSlot(){
+  const rs=save._runState;
+  if(rs&&rs.charId&&CHARS[rs.charId]){
+    selectedChar=rs.charId;
+    if(rs.difficulty)difficulty=rs.difficulty;
+    equippedAbilities=(rs.equippedAbilities||[]).slice();
+    ownedWeapons=(rs.ownedWeapons&&rs.ownedWeapons.length)?rs.ownedWeapons.slice():['w_sword','w_dagger','w_bow'];
+    hotbarWeapons=(rs.hotbarWeapons&&rs.hotbarWeapons.length)?rs.hotbarWeapons.slice():[ownedWeapons[0]||null,ownedWeapons[1]||null,ownedWeapons[2]||null,null,null];
+    activeWeaponSlot=0;
+    _startRestoredRun(rs);
+  } else if(save.char&&CHARS[save.char]){
+    selectedChar=save.char;
+    showScreen('charSelect');
+  } else {
+    showScreen('charSelect');
+  }
+}
+
+function _startRestoredRun(rs){
+  try{
+    paused=false;upgradePending=false;keys={};shopBuyCount={};currentShopItems=null;
+    mouse={x:0,y:0,sx:0,sy:0,left:false,right:false,lj:false,rj:false};
+    document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+    const _cd=document.getElementById('charDetail');if(_cd)_cd.style.display='none';
+    document.getElementById('hud').classList.remove('hidden');
+    document.getElementById('upgradeScreen').classList.add('hidden');
+    canvas.style.display='block';
+    const floor=rs.floor||1;
+    gameState={
+      floor,score:rs.score||0,kills:rs.kills||0,gold:rs.gold||0,
+      player:null,level:null,cam:{x:0,y:0},
+      particles:[],floatTexts:[],projectiles:[],
+      startTime:Date.now(),lastBossTime:0,
+      bossTriggeredThisFloor:false,
+      bossesDefeated:rs.bossesDefeated||0,dead:false,
+    };
+    const lvl=makePlatformLevel(floor,gameState);
+    const p=createPlayer(rs.charId);
+    if(rs.playerMaxHp)    p.maxHp=rs.playerMaxHp;
+    if(rs.playerHp)       p.hp=Math.min(rs.playerHp,p.maxHp);
+    if(rs.playerAtk)      p.atk=rs.playerAtk;
+    if(rs.playerDef)      p.def=rs.playerDef;
+    if(rs.playerSpd)      p.spd=rs.playerSpd;
+    if(rs.playerMaxMp)    p.maxMp=rs.playerMaxMp;
+    if(rs.playerMp)       p.mp=Math.min(rs.playerMp,p.maxMp);
+    if(rs.playerCrit)     p.critChance=rs.playerCrit;
+    if(rs.playerLifesteal)p.lifesteal=rs.playerLifesteal;
+    p.x=lvl.spawnX;p.y=lvl.spawnY;p.charId=rs.charId;
+    gameState.player=p;gameState.level=lvl;gameState.playerCharId=rs.charId;
+    mouse.x=p.x+40;mouse.y=p.y;mouse.sx=canvas.width/2+40;mouse.sy=canvas.height/2;
+    const D=DIFF[difficulty];
+    const badge=document.getElementById('hudDiffBadge');
+    if(badge){badge.textContent=D.label;badge.style.background=D.color+'33';badge.style.color=D.color;}
+    updateHUD();buildAbilityHUD();buildWeaponHotbar();
+    stopMusic(true);audioInit();setTimeout(()=>playMusic('normal'),300);
+    cancelAnimationFrame(animFrame);lastTime=0;
+    animFrame=requestAnimationFrame(gameLoop);
+    showNotif('RESUMED - FLOOR '+floor,'#10b981');
+  }catch(err){
+    console.error('_startRestoredRun error:',err);
+    showNotif('Error restoring run — starting fresh','#ef4444');
+    showScreen('charSelect');
+  }
+}
+
 // ── SLOT DEFAULT ─────────────────────────────────────────────
 const SLOT_DEFAULT={
   char:'hunter',highScore:0,deepestFloor:0,totalKills:0,bossKills:0,
@@ -851,9 +928,7 @@ function _openSlot(idx){
   if(!_accounts[idx].username){ _saveView='create'; buildSaveGrid(); }
   else {
     _loadSlot(idx);
-    selectedChar=save.char||'hunter';
-    showScreen('charSelect'); // go straight to char select
-    
+    _launchFromSlot();
   }
 }
 
