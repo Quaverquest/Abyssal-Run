@@ -819,7 +819,7 @@ function _doCreate(){
   _loadSlot(_pendingSlotIdx);
   selectedChar=save.char||'hunter';
   _saveView='slots';
-  showScreen('modeSelect'); // new save → pick world immediately
+  showScreen('charSelect'); // new save → pick character + difficulty first
 }
 
 // Show CONTINUE button on title if player has a saved char
@@ -1858,11 +1858,15 @@ function isSolid(tiles,tx,ty,W){
 }
 function moveEntity(e,tiles,dt,W){
   const step=Math.min(dt/16,2);
+  const isPlayer=(gameState&&e===gameState.player);
+  // Cap velocity — prevents knockback from flinging enemies off the map
+  const maxVX=isPlayer?24:10;
+  e.vx=Math.max(-maxVX,Math.min(e.vx,maxVX));
   e.vy=Math.max(-MAX_FALL,Math.min(e.vy+GRAV*step,MAX_FALL));
   const r=e.r;
-  // Move X in small sub-steps to avoid tunnelling
+  // Move X in smaller sub-steps to prevent tunnelling at high speed
   const stepX=e.vx*step;
-  const subSteps=Math.ceil(Math.abs(stepX)/8)||1;
+  const subSteps=Math.ceil(Math.abs(stepX)/6)||1;
   for(let s=0;s<subSteps;s++){
     const nx=e.x+stepX/subSteps;
     const tyTop=Math.floor((e.y-r+2)/TILE);
@@ -1889,9 +1893,16 @@ function moveEntity(e,tiles,dt,W){
       e.y=(tyTop+1)*TILE+r+0.5;e.vy=0;
     }else{e.y=ny;}
   }
-  // Hard clamp — never fall off world
-  e.x=Math.max(r+1,Math.min(W*TILE-r-1,e.x));
-  if(e.y>LVL_H*TILE-r){e.y=(GROUND-1)*TILE-r;e.vy=0;e.onGround=true;}
+  // Hard clamp — entities can NEVER leave the world bounds
+  // Use tighter inner bounds for enemies so they stay in the playfield
+  const minX=isPlayer?r+1:TILE+r;
+  const maxX=isPlayer?W*TILE-r-1:(W-1)*TILE-r;
+  if(e.x<minX){e.x=minX;if(!isPlayer)e.vx=Math.abs(e.vx)*0.2;}
+  if(e.x>maxX){e.x=maxX;if(!isPlayer)e.vx=-Math.abs(e.vx)*0.2;}
+  // Floor recovery — snap back if somehow below the ground
+  if(e.y>(GROUND+1)*TILE-r||e.y>LVL_H*TILE-r){
+    e.y=(GROUND)*TILE-r-1;e.vy=0;e.onGround=true;
+  }
 }
 
 // ============================================================
@@ -2199,7 +2210,7 @@ function updateMegaBoss(gs,b,p,dt,aggroRange,W){
   // Charge attack every 4s
   if(b.chargeTimer<=0){
     b.chargeTimer=4000-phase*500;
-    b.vx=Math.sign(edx)*b.spd*5;
+    b.vx=Math.sign(edx)*Math.min(b.spd*5, 9);// capped to prevent off-map launch
     spawnBurst(gs.particles,b.x,b.y,b.c2+'aa',20,5);
   }
 
