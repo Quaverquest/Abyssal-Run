@@ -286,6 +286,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div style="font-size:.55rem;color:#fbbf24;font-family:'Share Tech Mono',monospace;line-height:1.8">⚡ Play as Thor · Earn Mjölnir at floor 50<br>👑 Hela boss floor 100 · Marvel story</div>
     </div>
 
+    <!-- OPEN WORLD MODE -->
+    <div onclick="selectMode('openworld')" id="modeCard_openworld" style="width:240px;cursor:pointer;border:2px solid #10b981;background:rgba(16,185,129,.07);border-radius:14px;padding:1.3rem;transition:all .2s;text-align:center" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+      <div style="font-size:3rem;margin-bottom:.6rem;filter:drop-shadow(0 0 12px #10b981)">🌍</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:.85rem;color:#10b981;letter-spacing:.15em;margin-bottom:.5rem">OPEN WORLD</div>
+      <div style="font-size:.65rem;color:#64748b;line-height:1.6;margin-bottom:.7rem">No floors, no story — just you and the endless horizon. Run as far as you can. Monsters grow stronger every meter. How far can you go?</div>
+      <div style="font-size:.55rem;color:#10b981;font-family:'Share Tech Mono',monospace;line-height:1.8">🌍 Infinite scrolling · No story<br>📏 Distance counter · Ever-escalating danger</div>
+    </div>
+
   </div>
   <button class="btn" onclick="showScreen('charSelect')">← BACK</button>
 </div>
@@ -534,6 +542,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
       <div class="hud-floor" id="hudFloor">FLOOR 1</div>
       <div style="font-size:.65rem;color:var(--muted);margin-top:.15rem" id="hudEnemies">ENEMIES: 0</div>
       <div id="hudDiffBadge" class="diff-badge"></div>
+      <!-- Open World distance counter -->
+      <div id="hudDistance" style="display:none;font-family:'Share Tech Mono',monospace;font-size:.85rem;color:#10b981;font-weight:700;margin-top:.2rem;text-shadow:0 0 10px #10b98166">📏 <span id="hudDistanceVal">0</span>m</div>
+      <!-- Open World shop toggle button -->
+      <button id="hudOwShopBtn" onclick="toggleOwShop()" style="display:none;margin-top:.35rem;padding:.25rem .8rem;background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.5);color:#f59e0b;font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.1em;cursor:pointer;border-radius:4px;font-weight:700;pointer-events:auto">🛒 SHOP (B)</button>
     </div>
     <div style="text-align:right">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:.4rem;margin-bottom:.1rem">
@@ -590,6 +602,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 </div>
 
 <!-- upgradeScreen removed --><div id="upgradeScreen" class="screen hidden" style="display:none"></div>
+
+<!-- ⚡ MJÖLNIR GOODBYE OVERLAY -->
+<div id="mjolnirGoodbyeOverlay" style="display:none;position:fixed;inset:0;background:#000;z-index:9999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem">
+  <div id="mjolnirLightning" style="position:absolute;inset:0;pointer-events:none;z-index:1"></div>
+  <div id="mjolnirText" style="position:relative;z-index:2;opacity:0;transition:opacity 1.5s">
+    <div style="font-size:5rem;margin-bottom:1.5rem;filter:drop-shadow(0 0 40px #fbbf24)">⚡</div>
+    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.5rem,5vw,3.5rem);color:#fbbf24;letter-spacing:.15em;text-shadow:0 0 60px #fbbf24,0 0 120px #f59e0b;margin-bottom:1rem">GOODBYE OLD FRIEND</div>
+    <div style="font-size:clamp(.7rem,2vw,1rem);color:#78716c;font-family:'Rajdhani',sans-serif;letter-spacing:.3em;text-transform:uppercase;margin-bottom:3rem">You were worthy all along.</div>
+    <div style="width:200px;height:1px;background:linear-gradient(90deg,transparent,#fbbf2488,transparent);margin:.8rem auto"></div>
+  </div>
+  <button id="mjolnirContinueBtn" onclick="closeMjolnirGoodbye()" style="display:none;position:relative;z-index:2;margin-top:2rem;padding:.7rem 2.5rem;background:rgba(251,191,36,.15);border:1px solid #fbbf24;color:#fbbf24;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.2em;cursor:pointer;border-radius:4px">↩ CONTINUE</button>
+</div>
+
+<!-- 🌍 OPEN WORLD SHOP WIDGET (top overlay, game pauses while open) -->
+<div id="owShopWidget" style="display:none;position:fixed;top:0;left:0;right:0;max-height:55vh;background:rgba(3,3,12,.97);border-bottom:2px solid var(--gold);z-index:60;overflow-y:auto;flex-direction:column">
+  <div style="flex-shrink:0;padding:.6rem 1rem .3rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e1e3a;background:rgba(0,0,0,.5)">
+    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(.7rem,1.8vw,1.1rem);color:var(--gold);letter-spacing:.18em;text-shadow:0 0 14px rgba(245,158,11,.5)">⚔ OPEN WORLD SHOP</div>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.95rem;color:var(--gold);font-weight:700">🪙 <span id="owShopGold">0</span></div>
+      <button onclick="closeOwShop()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#ef4444;font-family:'Share Tech Mono',monospace;font-size:.7rem;padding:.3rem .7rem;border-radius:4px;cursor:pointer;letter-spacing:.1em">✕ CLOSE (B)</button>
+    </div>
+  </div>
+  <div style="flex-shrink:0;padding:.3rem 1rem;background:rgba(0,0,0,.3);border-bottom:1px solid #1e1e3a">
+    <div class="shop-tabs" id="owShopTabs" style="margin:0">
+      <button class="shop-tab active" onclick="switchOwShopTab('items')" id="owstab_items">🛒 ITEMS</button>
+      <button class="shop-tab" onclick="switchOwShopTab('weapons')" id="owstab_weapons">⚔️ WEAPONS</button>
+      <button class="shop-tab" onclick="switchOwShopTab('upgrades')" id="owstab_upgrades">🔧 UPGRADES</button>
+      <button class="shop-tab" onclick="switchOwShopTab('armor')" id="owstab_armor">🛡️ ARMOR</button>
+    </div>
+  </div>
+  <div id="owShopContent" style="flex:1;overflow-y:auto;display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;padding:.7rem 1rem;align-items:flex-start;align-content:flex-start;min-height:100px"></div>
+</div>
 
 <!-- GAME CANVAS -->
 <canvas id="gameCanvas"></canvas>
@@ -892,11 +936,13 @@ function confirmDeleteSlot(i){}
 // ============================================================
 let difficulty='normal';
 // ── GAME MODE ─────────────────────────────────────────────────
-let gameMode='abyss'; // 'abyss' | 'silent' | 'thor'
+let gameMode='abyss'; // 'abyss' | 'silent' | 'thor' | 'openworld'
+let owShopOpen=false;
+let owActiveShopTab='items';
 function selectMode(m){
   gameMode=m;
   // Highlight selected card
-  ['abyss','silent','thor'].forEach(id=>{
+  ['abyss','silent','thor','openworld'].forEach(id=>{
     const c=document.getElementById('modeCard_'+id);
     if(!c)return;
     if(id===m){c.style.boxShadow='0 0 28px currentColor';c.style.transform='scale(1.04) translateY(-4px)';}
@@ -1150,6 +1196,237 @@ function getEnemyScale(floor){
 const TILE=40;
 const LVL_H=14;// tiles tall
 const GROUND=LVL_H-2;// ground row index (solid)
+
+// ============================================================
+// OPEN WORLD — infinite horizontal runner
+// ============================================================
+const OW_TILE_WIDTH = 500; // very wide world in tiles
+function makeOpenWorldLevel(){
+  const D=DIFF[difficulty];
+  const W=OW_TILE_WIDTH;
+  const tiles=Array.from({length:LVL_H},(_,y)=>Array(W).fill(0));
+  for(let x=0;x<W;x++){tiles[GROUND][x]=1;tiles[GROUND+1][x]=1;tiles[0][x]=1;}
+  for(let y=0;y<LVL_H;y++){tiles[y][0]=1;tiles[y][W-1]=1;}
+  const platforms=[];
+  let curX=4,curY=GROUND;
+  while(curX<W-12){
+    const pw=Math.max(4,4+Math.floor(Math.random()*5));
+    const dy=Math.floor(Math.random()*3)-1;
+    let nextY=Math.max(3,Math.min(GROUND,curY+dy));
+    const gapX=3+Math.floor(Math.random()*5);
+    const px=curX+gapX;
+    if(px+pw>W-3)break;
+    for(let x=px;x<px+pw;x++)tiles[nextY][x]=1;
+    platforms.push({x:px,y:nextY,w:pw});
+    curX=px+pw;curY=nextY;
+  }
+  const items=[];
+  function safeItem(tx,surfaceRow){
+    let row=surfaceRow-1;
+    while(row>0&&tiles[row]?.[tx]===1)row--;
+    if(row<=0)return null;
+    return{x:tx*TILE+TILE/2,y:row*TILE-6};
+  }
+  for(let i=0;i<Math.floor(W/6);i++){
+    const tx=5+Math.floor(Math.random()*(W-10));
+    const pos=safeItem(tx,GROUND);
+    if(pos){const r=Math.random();items.push({x:pos.x,y:pos.y,type:r<0.55?'hp':r<0.8?'gold':'mp',collected:false});}
+  }
+  platforms.forEach(pl=>{
+    if(Math.random()<0.45){
+      const tx=pl.x+Math.floor(pl.w/2);
+      const pos=safeItem(tx,pl.y);
+      if(pos){const r=Math.random();items.push({x:pos.x,y:pos.y,type:r<0.5?'hp':'gold',collected:false});}
+    }
+  });
+  return{tiles,W,H:LVL_H,
+    spawnX:3*TILE,spawnY:(GROUND-1)*TILE-30,
+    exitX:null,exitY:null,
+    enemies:[],items,megaBoss:null,platforms,
+    bossFloor:false,isOpenWorld:true,
+  };
+}
+
+function spawnOpenWorldEnemy(gs){
+  if(!gs||!gs.level)return;
+  const p=gs.player;if(!p)return;
+  const dist=gs.distanceMeters||0;
+  const D=DIFF[difficulty];
+  const pool=dist<200?['goblin','sprite']:
+              dist<500?['goblin','sprite','orc','archer']:
+              dist<1000?['orc','archer','leaper','demon']:
+              dist<2000?['demon','specter','splitter']:
+              ['specter','splitter','warlord'];
+  const scale=Math.max(1,1+dist/500);
+  const type=pool[Math.floor(Math.random()*pool.length)];
+  const def=EDEFS[type];
+  const hp=Math.round(def.hp*scale*D.eHpMult);
+  const goldDrop=Math.round(def.gold*scale*(difficulty==='hard'?0.8:difficulty==='easy'?1.2:1)*2);
+  const spawnRight=Math.random()<0.8;
+  const lvl=gs.level;
+  const spawnX=spawnRight
+    ? Math.min((lvl.W-4)*TILE, p.x+(canvas.width*0.7+Math.random()*200))
+    : Math.max(4*TILE, p.x-(canvas.width*0.4+Math.random()*100));
+  const GROUND_Y=(GROUND-1)*TILE-def.r-2;
+  gs.level.enemies.push({
+    x:spawnX,y:GROUND_Y,
+    type,maxHp:hp,hp,atk:def.atk*scale*D.eAtkMult,
+    spd:def.spd*D.eSpdMult,
+    c1:def.c1,c2:def.c2,r:def.r,
+    score:Math.round(def.score*scale),gold:goldDrop,
+    vx:def.spd*(Math.random()<.5?1:-1)*D.eSpdMult,
+    vy:0,alive:true,hitFlash:0,onGround:false,
+    dir:Math.random()<.5?1:-1,
+    shootTimer:1800+Math.random()*1200,
+    aiTimer:Math.random()*1000,
+    isBoss:false,isShooter:type==='archer',
+    splitDone:false,W:lvl.W,tiles:lvl.tiles,
+    _owSpawned:true,
+  });
+}
+
+function updateOpenWorld(gs, p, dt){
+  const metersNow=Math.floor(Math.max(0,p.x-3*TILE)/(TILE*1.5));
+  if(metersNow>gs.distanceMeters)gs.distanceMeters=metersNow;
+  const dv=document.getElementById('hudDistanceVal');
+  if(dv)dv.textContent=gs.distanceMeters.toLocaleString();
+  const maxEnemiesOnScreen=Math.min(4+Math.floor(gs.distanceMeters/150),16);
+  const aliveCount=gs.level.enemies.filter(e=>e.alive).length;
+  const spawnInterval=Math.max(600,3500-gs.distanceMeters*2);
+  gs.owSpawnTimer=(gs.owSpawnTimer||2000)-dt;
+  if(gs.owSpawnTimer<=0){
+    gs.owSpawnTimer=spawnInterval;
+    if(aliveCount<maxEnemiesOnScreen){
+      spawnOpenWorldEnemy(gs);
+      if(gs.distanceMeters>600&&aliveCount<maxEnemiesOnScreen-2)spawnOpenWorldEnemy(gs);
+    }
+  }
+  gs.score=Math.max(gs.score,gs.distanceMeters*10+(gs.kills||0)*50);
+  // Update zone label
+  const zone=Math.floor(gs.distanceMeters/300)+1;
+  const hudFloor=document.getElementById('hudFloor');
+  if(hudFloor)hudFloor.textContent=`ZONE ${zone}`;
+  const hudEn=document.getElementById('hudEnemies');
+  if(hudEn)hudEn.textContent='ENEMIES: '+aliveCount;
+  // Dead enemies gc — remove far-away dead ones to keep array lean
+  if(gs.level.enemies.length>60){
+    gs.level.enemies=gs.level.enemies.filter(e=>e.alive||Math.abs(e.x-p.x)<canvas.width*2);
+  }
+  // Prevent player walking off right edge by extending world conceptually
+  if(p.x>=(gs.level.W-6)*TILE){
+    // Clamp player to a safe zone, enemies will keep coming
+    p.x=(gs.level.W-6)*TILE;p.vx=0;
+  }
+}
+
+// ── Open World keyboard handler (B key = shop) ──
+window.addEventListener('keydown',e=>{
+  if(e.code==='KeyB'&&gameMode==='openworld'&&gameState&&!gameState.dead&&!isTyping()){
+    toggleOwShop();
+  }
+});
+
+function toggleOwShop(){if(owShopOpen)closeOwShop();else openOwShop();}
+
+function openOwShop(){
+  if(!gameState||gameState.dead)return;
+  owShopOpen=true;
+  cancelAnimationFrame(animFrame);animFrame=null;
+  mouse.left=false;mouse.right=false;mouse.lj=false;mouse.rj=false;
+  currentShopItems=[...SHOP_ITEMS].sort(()=>Math.random()-.5).slice(0,9);
+  const widget=document.getElementById('owShopWidget');
+  if(widget)widget.style.display='flex';
+  const goldEl=document.getElementById('owShopGold');
+  if(goldEl)goldEl.textContent=gameState.gold;
+  owActiveShopTab='items';
+  document.querySelectorAll('#owShopTabs .shop-tab').forEach(t=>t.classList.remove('active'));
+  const aitab=document.getElementById('owstab_items');if(aitab)aitab.classList.add('active');
+  renderOwShopContent();
+}
+function closeOwShop(){
+  owShopOpen=false;
+  const widget=document.getElementById('owShopWidget');
+  if(widget)widget.style.display='none';
+  if(gameState&&!gameState.dead&&gameMode==='openworld'){
+    lastTime=0;animFrame=requestAnimationFrame(gameLoop);
+  }
+}
+function switchOwShopTab(tab){
+  owActiveShopTab=tab;
+  document.querySelectorAll('#owShopTabs .shop-tab').forEach(t=>t.classList.remove('active'));
+  const btn=document.getElementById('owstab_'+tab);if(btn)btn.classList.add('active');
+  renderOwShopContent();
+}
+function renderOwShopContent(){
+  const el=document.getElementById('owShopContent');if(!el)return;
+  if(owActiveShopTab==='items')renderOwShopItems(el);
+  else if(owActiveShopTab==='weapons')renderOwShopWeapons(el);
+  else if(owActiveShopTab==='upgrades')renderOwShopUpgradesEl(el);
+  else if(owActiveShopTab==='armor')renderOwShopArmorEl(el);
+}
+function renderOwShopItems(el){
+  const gs=gameState;if(!gs||!currentShopItems){el.innerHTML='';return;}
+  el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center;max-width:900px">
+  ${currentShopItems.map(item=>{const cost=getShopCost(item);const can=gs.gold>=cost;
+    return`<div class="shop-card${can?'':' cant-afford'}" onclick="owBuyShopItem('${item.id}')" style="width:140px">
+      <div class="shop-icon" style="font-size:1.5rem;margin-bottom:.2rem">${item.icon}</div>
+      <div class="shop-name" style="font-size:.52rem">${item.name}</div>
+      <div class="shop-desc" style="font-size:.6rem">${item.desc}</div>
+      <div class="shop-cost ${can?'can':'no'}">${cost}🪙</div>
+    </div>`;}).join('')}
+  </div>`;
+}
+function owBuyShopItem(id){
+  const gs=gameState;if(!gs||!currentShopItems)return;
+  const item=currentShopItems.find(i=>i.id===id);if(!item)return;
+  const cost=getShopCost(item);
+  if(cost>0&&gs.gold<cost){showNotif('Not enough gold! 🪙','#ef4444');return;}
+  gs.gold-=cost;shopBuyCount[item.id]=(shopBuyCount[item.id]||0)+1;
+  item.apply(gs.player);showNotif('✓ '+item.name+'!','#f59e0b');
+  const goldEl=document.getElementById('owShopGold');if(goldEl)goldEl.textContent=gs.gold;
+  updateHUD();renderOwShopItems(document.getElementById('owShopContent'));
+}
+function renderOwShopWeapons(el){
+  const gs=gameState;const charId=gs?.playerCharId||selectedChar;
+  let html=`<div style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;max-width:900px">`;
+  WEAPONS.filter(w=>!w.free&&(!w.charLock||w.charLock===charId)).forEach(w=>{
+    const owned=ownedWeapons.includes(w.id);
+    const afford=!gs||gs.gold>=w.cost;
+    html+=`<div onclick="owBuyWeaponEl('${w.id}')" style="width:125px;background:var(--panel);border:1px solid ${owned?'#10b98144':'var(--border)'};border-radius:8px;padding:.55rem;text-align:center;cursor:${owned?'default':'pointer'};opacity:${owned?.65:1}">
+      <div style="font-size:1.5rem">${w.icon}</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:.46rem;color:${owned?'#10b981':'var(--accent2)'};margin:.15rem 0">${w.name}</div>
+      <div style="font-size:.48rem;color:var(--muted);line-height:1.3;margin-bottom:.25rem">${w.desc.slice(0,55)}${w.desc.length>55?'…':''}</div>
+      <div style="font-size:.62rem;font-weight:700;color:${owned?'#10b981':afford?'var(--gold)':'var(--red)'}">${owned?'✓':w.cost+'🪙'}</div>
+    </div>`;
+  });
+  el.innerHTML=html+'</div>';
+}
+function owBuyWeaponEl(wid){
+  buyWeapon(wid);
+  const goldEl=document.getElementById('owShopGold');if(goldEl&&gameState)goldEl.textContent=gameState.gold;
+  renderOwShopWeapons(document.getElementById('owShopContent'));
+}
+function renderOwShopUpgradesEl(el){
+  // Temporarily swap shopContent reference
+  const backup=document.getElementById('shopContent');
+  const fake=document.createElement('div');fake.id='shopContent';document.body.appendChild(fake);
+  if(backup)backup.id='_shopContentBak';
+  renderShopUpgrades();
+  el.innerHTML=fake.innerHTML;
+  fake.remove();
+  if(backup)backup.id='shopContent';
+}
+function renderOwShopArmorEl(el){
+  const backup=document.getElementById('shopContent');
+  const fake=document.createElement('div');fake.id='shopContent';document.body.appendChild(fake);
+  if(backup)backup.id='_shopContentBak';
+  renderShopArmor();
+  el.innerHTML=fake.innerHTML;
+  fake.remove();
+  if(backup)backup.id='shopContent';
+}
+
+
 
 function makePlatformLevel(floor, gs){
   const D=DIFF[difficulty];
@@ -1775,6 +2052,12 @@ function startGame(){
     if(!save._preThorTitanSkin) save._preThorTitanSkin=save.skinColors['titan']||null;
     save.skinColors['titan']={p:'#d97706',s:'#fbbf24'};
   }
+  // ── OPEN WORLD MODE: setup ──
+  if(gameMode==='openworld'){
+    owShopOpen=false;
+    const owWidget=document.getElementById('owShopWidget');
+    if(owWidget)owWidget.style.display='none';
+  }
   // Weapon inventory — restore previous loadout if same char, else fresh starters
   const _sigW='w_sig_'+selectedChar;
   const _charStarters={
@@ -1820,8 +2103,13 @@ function startGame(){
     bossTriggeredThisFloor:false,
     bossesDefeated:0,
     dead:false,
+    // Open World fields
+    distanceMeters:0,
+    owSpawnTimer:2000,
+    owMaxDistanceSeen:0,
+    owLevelExtensionX:0,
   };
-  const lvl=makePlatformLevel(1,gameState);
+  const lvl=gameMode==='openworld'?makeOpenWorldLevel():makePlatformLevel(1,gameState);
   const p=createPlayer(selectedChar);
   p.x=lvl.spawnX;p.y=lvl.spawnY;
   p.charId=selectedChar;
@@ -1832,11 +2120,17 @@ function startGame(){
   mouse.x=p.x+40;mouse.y=p.y;mouse.sx=canvas.width/2+40;mouse.sy=canvas.height/2;
   const D=DIFF[difficulty];
   const badge=document.getElementById('hudDiffBadge');
+  const distEl=document.getElementById('hudDistance');
+  const shopBtnEl=document.getElementById('hudOwShopBtn');
+  if(distEl)distEl.style.display=gameMode==='openworld'?'block':'none';
+  if(shopBtnEl)shopBtnEl.style.display=gameMode==='openworld'?'block':'none';
   if(badge){
     if(gameMode==='thor'){
       badge.textContent='⚡ THOR MODE';badge.style.background='#f59e0b33';badge.style.color='#fbbf24';
     } else if(gameMode==='silent'){
       badge.textContent='🔇 '+D.label;badge.style.background=D.color+'22';badge.style.color=D.color;
+    } else if(gameMode==='openworld'){
+      badge.textContent='🌍 OPEN WORLD';badge.style.background='#10b98133';badge.style.color='#10b981';
     } else {
       badge.textContent=D.label;badge.style.background=D.color+'33';badge.style.color=D.color;
     }
@@ -1942,6 +2236,9 @@ function update(dt){
   // Sync mouse world pos
   mouse.x=mouse.sx+gs.cam.x;
   mouse.y=mouse.sy+gs.cam.y;
+
+  // ── OPEN WORLD continuous update ──
+  if(gameMode==='openworld')updateOpenWorld(gs,p,dt);
 
   // === PLAYER MOVEMENT (uses remappable ctrlMap) ===
   let dx=0;
@@ -2195,10 +2492,12 @@ function update(dt){
 
   p.mp=Math.min(p.maxMp,p.mp+.006*dt);
 
-  // === EXIT CHECK — only if all enemies dead, and not already in shop ===
-  const aliveCount=[...lvl.enemies,...(lvl.megaBoss?[lvl.megaBoss]:[])].filter(e=>e.alive).length;
-  const exitDist=Math.hypot(p.x-lvl.exitX,p.y-lvl.exitY);
-  if(exitDist<38&&aliveCount===0&&!gs._shopPending){gs._shopPending=true;nextFloor();}
+  // === EXIT CHECK — only if all enemies dead, not in OW mode, and not already in shop ===
+  if(gameMode!=='openworld'){
+    const aliveCount=[...lvl.enemies,...(lvl.megaBoss?[lvl.megaBoss]:[])].filter(e=>e.alive).length;
+    const exitDist=lvl.exitX!=null?Math.hypot(p.x-lvl.exitX,p.y-lvl.exitY):9999;
+    if(exitDist<38&&aliveCount===0&&!gs._shopPending){gs._shopPending=true;nextFloor();}
+  }
 
   // Particles + floats
   updateParticles(gs.particles,dt);
@@ -2487,7 +2786,8 @@ function render(){
   }
   ctx.restore();
 
-  // Render exit portal
+  // Render exit portal (not in open world mode)
+  if(gameMode!=='openworld'&&lvl.exitX!=null){
   const aliveCount=[...lvl.enemies,...(lvl.megaBoss?[lvl.megaBoss]:[])].filter(e=>e.alive).length;
   const cleared=aliveCount===0;
   const pulse=.5+Math.sin(Date.now()*.003)*.5;
@@ -2500,6 +2800,7 @@ function render(){
   ctx.fillText(cleared?'▶':'🔒',lvl.exitX,lvl.exitY);
   if(!cleared){ctx.fillStyle='#64748b88';ctx.font='10px Rajdhani';ctx.fillText('Defeat all enemies',lvl.exitX,lvl.exitY+34);}
   ctx.restore();
+  }
 
   // Items
   lvl.items.forEach(it=>{
@@ -3451,11 +3752,17 @@ function updateHUD(){
   const hpEl=document.getElementById('hpText');if(hpEl)hpEl.textContent=Math.max(0,Math.ceil(p.hp))+'/'+p.maxHp;
   const mpEl=document.getElementById('mpText');if(mpEl)mpEl.textContent=Math.ceil(p.mp)+'/'+p.maxMp;
   document.getElementById('hudScore').textContent=gs.score.toLocaleString();
-  // Floor label — realm name in Thor mode
-  const REALMS=['ASGARD','JOTUNHEIM','NIDAVELLIR','ALFHEIM','MIDGARD','SVARTALFHEIM','MUSPELHEIM','NIFLHEIM','HELHEIM'];
-  const floorLabel = gameMode==='thor'
-    ? `${REALMS[Math.floor((gs.floor-1)/12)%REALMS.length]} · FLOOR ${gs.floor}`
-    : 'FLOOR '+gs.floor;
+  // Floor label — realm name in Thor mode, distance in OW mode
+  let floorLabel;
+  if(gameMode==='openworld'){
+    const zone=Math.floor((gs.distanceMeters||0)/300)+1;
+    floorLabel=`ZONE ${zone}`;
+  } else if(gameMode==='thor'){
+    const REALMS=['ASGARD','JOTUNHEIM','NIDAVELLIR','ALFHEIM','MIDGARD','SVARTALFHEIM','MUSPELHEIM','NIFLHEIM','HELHEIM'];
+    floorLabel=`${REALMS[Math.floor((gs.floor-1)/12)%REALMS.length]} · FLOOR ${gs.floor}`;
+  } else {
+    floorLabel='FLOOR '+gs.floor;
+  }
   document.getElementById('hudFloor').textContent=floorLabel;
   const aliveNow=[...lvl.enemies,...(lvl.megaBoss?[lvl.megaBoss]:[])].filter(e=>e.alive).length;
   document.getElementById('hudEnemies').textContent='ENEMIES: '+aliveNow;
@@ -3516,17 +3823,17 @@ function updateHUD(){
 // FLOOR SHOP — between levels, spend gold on buffs
 // ============================================================
 const SHOP_ITEMS=[
-  {id:'buy_hp',   icon:'❤️', name:'Healing Draught',  desc:'Restore 40 HP',          baseCost:30,  costScale:1.0, apply:(p)=>{p.hp=Math.min(p.maxHp,p.hp+40);}},
-  {id:'buy_maxhp',icon:'💪', name:'Vitality Shard',   desc:'Max HP +20',              baseCost:50,  costScale:1.2, apply:(p)=>{p.maxHp+=20;p.hp=Math.min(p.hp+20,p.maxHp);}},
-  {id:'buy_atk',  icon:'⚔️', name:'Sharpening Stone', desc:'Attack +18%',             baseCost:60,  costScale:1.3, apply:(p)=>{p.atk=Math.round(p.atk*1.18);}},
-  {id:'buy_def',  icon:'🛡️', name:'Iron Plate',       desc:'Defense +5',              baseCost:45,  costScale:1.2, apply:(p)=>{p.def+=5;}},
-  {id:'buy_spd',  icon:'⚡', name:'Hermes Boots',     desc:'Move speed +12%',         baseCost:55,  costScale:1.2, apply:(p)=>{p.spd=Math.round(p.spd*1.12*10)/10;}},
-  {id:'buy_crit', icon:'💥', name:'Eagle Eye',        desc:'Crit chance +15%',        baseCost:65,  costScale:1.4, apply:(p)=>{p.critChance=(p.critChance||0)+0.15;}},
-  {id:'buy_ls',   icon:'🩸', name:'Vampire Fang',     desc:'Lifesteal +5 HP/hit',     baseCost:70,  costScale:1.5, apply:(p)=>{p.lifesteal=(p.lifesteal||0)+5;}},
-  {id:'buy_mp',   icon:'💎', name:'Mana Crystal',     desc:'Max MP +25 + full refill',baseCost:40,  costScale:1.1, apply:(p)=>{p.maxMp+=25;p.mp=p.maxMp;}},
-  {id:'buy_cd',   icon:'⏱️', name:'Cooldown Rune',    desc:'Ability CDs -25%',        baseCost:75,  costScale:1.5, apply:(p)=>{p.cdMult=(p.cdMult||1)*0.75;}},
-  {id:'buy_dash', icon:'💨', name:'Aether Step',      desc:'Dash CD -35%',            baseCost:55,  costScale:1.3, apply:(p)=>{p.dashCdMult=(p.dashCdMult||1)*0.65;}},
-  {id:'buy_fullhp',icon:'✨',name:'Full Elixir',      desc:'Fully restore HP',        baseCost:120, costScale:1.0, apply:(p)=>{p.hp=p.maxHp;}},
+  {id:'buy_hp',   icon:'❤️', name:'Healing Draught',  desc:'Restore 40 HP',          baseCost:120,  costScale:1.0, apply:(p)=>{p.hp=Math.min(p.maxHp,p.hp+40);}},
+  {id:'buy_maxhp',icon:'💪', name:'Vitality Shard',   desc:'Max HP +20',              baseCost:200,  costScale:1.2, apply:(p)=>{p.maxHp+=20;p.hp=Math.min(p.hp+20,p.maxHp);}},
+  {id:'buy_atk',  icon:'⚔️', name:'Sharpening Stone', desc:'Attack +18%',             baseCost:240,  costScale:1.3, apply:(p)=>{p.atk=Math.round(p.atk*1.18);}},
+  {id:'buy_def',  icon:'🛡️', name:'Iron Plate',       desc:'Defense +5',              baseCost:180,  costScale:1.2, apply:(p)=>{p.def+=5;}},
+  {id:'buy_spd',  icon:'⚡', name:'Hermes Boots',     desc:'Move speed +12%',         baseCost:220,  costScale:1.2, apply:(p)=>{p.spd=Math.round(p.spd*1.12*10)/10;}},
+  {id:'buy_crit', icon:'💥', name:'Eagle Eye',        desc:'Crit chance +15%',        baseCost:260,  costScale:1.4, apply:(p)=>{p.critChance=(p.critChance||0)+0.15;}},
+  {id:'buy_ls',   icon:'🩸', name:'Vampire Fang',     desc:'Lifesteal +5 HP/hit',     baseCost:280,  costScale:1.5, apply:(p)=>{p.lifesteal=(p.lifesteal||0)+5;}},
+  {id:'buy_mp',   icon:'💎', name:'Mana Crystal',     desc:'Max MP +25 + full refill',baseCost:160,  costScale:1.1, apply:(p)=>{p.maxMp+=25;p.mp=p.maxMp;}},
+  {id:'buy_cd',   icon:'⏱️', name:'Cooldown Rune',    desc:'Ability CDs -25%',        baseCost:300,  costScale:1.5, apply:(p)=>{p.cdMult=(p.cdMult||1)*0.75;}},
+  {id:'buy_dash', icon:'💨', name:'Aether Step',      desc:'Dash CD -35%',            baseCost:220,  costScale:1.3, apply:(p)=>{p.dashCdMult=(p.dashCdMult||1)*0.65;}},
+  {id:'buy_fullhp',icon:'✨',name:'Full Elixir',      desc:'Fully restore HP',        baseCost:480, costScale:1.0, apply:(p)=>{p.hp=p.maxHp;}},
 ];
 
 // How many times each item has been bought this run (cost inflation)
@@ -3790,26 +4097,26 @@ const WEAPONS = [
   {id:'w_dagger',   name:'Twin Daggers', icon:'🗡️',  type:'melee',   dmgMult:0.18, cd:220,  hits:2, mp:0,  range:42,  desc:'Fast but very weak each hit. Only shines with lots of ATK.',        free:true},
   {id:'w_bow',      name:'Hunter Bow',   icon:'🏹',  type:'ranged',  dmgMult:0.40, cd:650,  hits:1, mp:0,  range:999, desc:'Starter ranged. Weak — buy upgrades to make useful.',               free:true},
   {id:'w_spear',    name:'Iron Spear',   icon:'🔱',  type:'melee',   dmgMult:0.70, cd:550,  hits:1, mp:0,  range:105, desc:'Reach out and pierce! Longer range than sword, great for poking enemies.', free:true},
-  {id:'w_crossbow', name:'Crossbow',     icon:'🔫',  type:'ranged',  dmgMult:0.80, cd:1200, hits:1, mp:5,  range:999, desc:'Piercing bolt. Slow reload. Decent mid-tier ranged.',               cost:620},
-  {id:'w_staff',    name:'Arcane Staff', icon:'🪄',  type:'magic',   dmgMult:0.70, cd:700,  hits:1, mp:11, range:999, desc:'Magic piercing bolt. MP costs add up fast.',                   cost:740},
-  {id:'w_bomb',     name:'Bomb',         icon:'💣',  type:'thrown',  dmgMult:1.10, cd:2200, hits:1, mp:0,  range:200, desc:'Big AoE but very long cooldown. Plan ahead.',               cost:560},
-  {id:'w_greataxe', name:'Great Axe',    icon:'🪓',  type:'melee',   dmgMult:1.05, cd:1050, hits:1, mp:3,  range:80,  desc:'AoE cleave. High floor damage when fully upgraded.',                 cost:840},
-  {id:'w_wand',     name:'Chaos Wand',   icon:'✨',  type:'magic',   dmgMult:0.38, cd:380,  hits:3, mp:14, range:999, desc:'3-bolt spread. Low damage per bolt, eats MP fast.',          cost:900},
-  {id:'w_shield',   name:'War Shield',   icon:'🛡️',  type:'tool',    dmgMult:0.30, cd:1000, hits:1, mp:8,  range:55,  desc:'Grants brief invincibility and shoves enemies.',            cost:700},
-  {id:'w_hammer',   name:'Warhammer',    icon:'🔨',  type:'melee',   dmgMult:1.20, cd:1400, hits:1, mp:0,  range:68,  desc:'Big damage + stun. Extremely slow — plan your swings.',                  cost:1050},
-  {id:'w_boomerang',name:'Boomerang',    icon:'🪃',  type:'ranged',  dmgMult:0.55, cd:850,  hits:2, mp:4,  range:999, desc:'Hits going out AND coming back. Mouse-aimed.',              cost:780},
+  {id:'w_crossbow', name:'Crossbow',     icon:'🔫',  type:'ranged',  dmgMult:0.80, cd:1200, hits:1, mp:5,  range:999, desc:'Piercing bolt. Slow reload. Decent mid-tier ranged.',               cost:2480},
+  {id:'w_staff',    name:'Arcane Staff', icon:'🪄',  type:'magic',   dmgMult:0.70, cd:700,  hits:1, mp:11, range:999, desc:'Magic piercing bolt. MP costs add up fast.',                   cost:2960},
+  {id:'w_bomb',     name:'Bomb',         icon:'💣',  type:'thrown',  dmgMult:1.10, cd:2200, hits:1, mp:0,  range:200, desc:'Big AoE but very long cooldown. Plan ahead.',               cost:2240},
+  {id:'w_greataxe', name:'Great Axe',    icon:'🪓',  type:'melee',   dmgMult:1.05, cd:1050, hits:1, mp:3,  range:80,  desc:'AoE cleave. High floor damage when fully upgraded.',                 cost:3360},
+  {id:'w_wand',     name:'Chaos Wand',   icon:'✨',  type:'magic',   dmgMult:0.38, cd:380,  hits:3, mp:14, range:999, desc:'3-bolt spread. Low damage per bolt, eats MP fast.',          cost:3600},
+  {id:'w_shield',   name:'War Shield',   icon:'🛡️',  type:'tool',    dmgMult:0.30, cd:1000, hits:1, mp:8,  range:55,  desc:'Grants brief invincibility and shoves enemies.',            cost:2800},
+  {id:'w_hammer',   name:'Warhammer',    icon:'🔨',  type:'melee',   dmgMult:1.20, cd:1400, hits:1, mp:0,  range:68,  desc:'Big damage + stun. Extremely slow — plan your swings.',                  cost:4200},
+  {id:'w_boomerang',name:'Boomerang',    icon:'🪃',  type:'ranged',  dmgMult:0.55, cd:850,  hits:2, mp:4,  range:999, desc:'Hits going out AND coming back. Mouse-aimed.',              cost:3120},
   // ── AIRSTRIKE — massive area bombardment, 40s cooldown ──
   {id:'w_airstrike',name:'Airstrike',    icon:'🛩️',  type:'airstrike',dmgMult:6.0, cd:40000,hits:1, mp:30, range:999,
    desc:'Call in a devastating air bombardment — 12 bombs rain across the entire level in 2 seconds. Clears rooms. 40s cooldown, 30 MP.',
-   cost:3500},
+   cost:14000},
   // ── MINIGUN — 300 rapid low-damage bullets ──
   {id:'w_minigun',  name:'Minigun',      icon:'🔰',  type:'minigun', dmgMult:0.04, cd:18000,hits:1, mp:20, range:999,
    desc:'Fires 300 rapid bullets over 8 seconds. Each bullet is weak, together they shred anything. 18s cooldown, 20 MP.',
-   cost:2800},
+   cost:11200},
   // ── MJÖLNIR — god-hammer, now a normal shop item ──
   {id:'w_mjolnir', name:'Mjölnir', icon:'⚡', type:'divine', dmgMult:8.0, cd:8000, hits:1, mp:25, range:160,
    desc:'The God-Hammer of Thor. Massive AoE lightning strike — deals 800% ATK to ALL nearby enemies and stuns them. 8s cooldown, costs 25 MP.',
-   cost:1000000},
+   cost:4000000},
   // ── CHARACTER SIGNATURE WEAPONS (free, locked to each class) ──
   {id:'w_sig_hunter', name:"Ace of Spades",  icon:'🔫', type:'ranged', dmgMult:0.95, cd:380,  hits:1, mp:0, range:999, desc:'Hunter signature. Hand cannon — every 3rd shot guaranteed crit and refunds 10 HP.', charLock:'hunter', free:true},
   {id:'w_sig_titan',  name:'Helm of Saint-14',icon:'🪖', type:'melee',  dmgMult:1.40, cd:900,  hits:1, mp:0, range:78,  desc:'Titan signature. Headbutt slam — blinds all hit enemies for 1.5s and knocks them away.', charLock:'titan', free:true},
@@ -3890,7 +4197,7 @@ function renderShopArmor(){
   const ch=CHARS[charId]; if(!ch||!ch.armorSets){el.innerHTML='<div style="color:#64748b;text-align:center;padding:2rem">No armor sets for this class.</div>';return;}
   const equipped=(save.equippedArmor&&save.equippedArmor[charId])||{head:0,chest:0,legs:0,feet:0};
   const slotIcons={head:'🪖',chest:'🛡️',legs:'🦿',feet:'👢'};
-  const tierCosts=[0,120,280,520]; // tier 0=none, 1,2,3
+  const tierCosts=[0,480,1120,2080]; // tier 0=none, 1,2,3 (4x original)
   const tierLabels=['—','TIER I','TIER II','TIER III'];
   const tierColors=['#334155','#10b981','#3b82f6','#f59e0b'];
   let html=`<div style="max-width:720px;width:100%">
@@ -4260,7 +4567,6 @@ function buyWeapon(wid){
   if(w.cost>0 && gs.gold<w.cost){showNotif('Not enough gold! 🪙','#ef4444');return;}
   gs.gold -= w.cost;
   ownedWeapons.push(wid);
-  // Auto-equip to first empty hotbar slot
   const emptySlot = hotbarWeapons.indexOf(null);
   if(emptySlot>=0) hotbarWeapons[emptySlot]=wid;
   showNotif(w.icon+' '+w.name+' added to hotbar!','#10b981');
@@ -4268,12 +4574,14 @@ function buyWeapon(wid){
   updateHUD();
   buildWeaponHotbar();
   renderShopWeapons();
+  // ⚡ Mjolnir easter egg
+  if(wid==='w_mjolnir') triggerMjolnirGoodbye();
 }
 
 function buyMjolnir(){
   const gs=gameState; if(!gs){showNotif('Start a run first!','#ef4444');return;}
   if(ownedWeapons.includes('w_mjolnir')){showNotif('⚡ You already wield Mjölnir!','#fbbf24');return;}
-  const cost=1000000;
+  const cost=4000000;
   if(cost>0 && gs.gold<cost){
     showNotif(`Need ${(cost-gs.gold).toLocaleString()} more 🪙!`,'#ef4444');
     return;
@@ -4286,8 +4594,73 @@ function buyMjolnir(){
   buildWeaponHotbar();
   updateHUD();
   renderShopWeapons();
-  showNotif('⚡ MJÖLNIR UNLEASHED! YOU ARE WORTHY!','#fbbf24');
-  for(let i=0;i<8;i++)setTimeout(()=>{if(gameState)spawnBurst(gameState.particles,gameState.player.x,gameState.player.y,'#fbbf24ff',35,12);},i*100);
+  // ⚡ TRIGGER MJÖLNIR GOODBYE EASTER EGG
+  triggerMjolnirGoodbye();
+}
+
+function triggerMjolnirGoodbye(){
+  // Close any open shop panels first
+  const shopScreen=document.getElementById('shopScreen');if(shopScreen)shopScreen.classList.add('hidden');
+  closeOwShop();
+  // Pause game loop
+  cancelAnimationFrame(animFrame);animFrame=null;
+  const overlay=document.getElementById('mjolnirGoodbyeOverlay');
+  if(!overlay)return;
+  overlay.style.display='flex';
+  const textEl=document.getElementById('mjolnirText');
+  const continueBtn=document.getElementById('mjolnirContinueBtn');
+  const lightning=document.getElementById('mjolnirLightning');
+  // Create lightning flash effect
+  let flashCount=0;
+  const colors=['#fbbf24','#ffffff','#fde68a','#ffffff','#f59e0b'];
+  function doFlash(){
+    if(flashCount>=8){
+      // Screen goes fully dark, show text
+      overlay.style.background='#000';
+      if(lightning)lightning.innerHTML='';
+      setTimeout(()=>{
+        if(textEl)textEl.style.opacity='1';
+        playSfx('explosion');
+        setTimeout(()=>{
+          if(continueBtn)continueBtn.style.display='block';
+        },2500);
+      },400);
+      return;
+    }
+    const col=colors[flashCount%colors.length];
+    overlay.style.background=flashCount%2===0?col:'#000';
+    // Add lightning bolt visual
+    if(lightning){
+      const bolt=document.createElement('div');
+      bolt.style.cssText=`position:absolute;top:0;left:${20+Math.random()*60}%;width:3px;height:100%;background:linear-gradient(180deg,${col},transparent);opacity:${0.8+Math.random()*0.2};pointer-events:none;filter:blur(1px)`;
+      lightning.appendChild(bolt);
+      setTimeout(()=>{if(bolt.parentNode)bolt.remove();},120);
+    }
+    playSfx(flashCount%2===0?'explosion':'heavySwing');
+    flashCount++;
+    setTimeout(doFlash,flashCount<4?80:150);
+  }
+  // Initial dramatic pause then flash
+  setTimeout(doFlash,300);
+}
+
+function closeMjolnirGoodbye(){
+  const overlay=document.getElementById('mjolnirGoodbyeOverlay');
+  if(overlay)overlay.style.display='none';
+  const textEl=document.getElementById('mjolnirText');if(textEl)textEl.style.opacity='0';
+  const continueBtn=document.getElementById('mjolnirContinueBtn');if(continueBtn)continueBtn.style.display='none';
+  const lightning=document.getElementById('mjolnirLightning');if(lightning)lightning.innerHTML='';
+  // Resume game if active
+  if(gameState&&!gameState.dead){
+    if(gameMode==='openworld'){
+      const hud=document.getElementById('hud');if(hud)hud.classList.remove('hidden');
+      const hb=document.getElementById('weaponHotbar');if(hb)hb.classList.remove('hidden');
+      lastTime=0;animFrame=requestAnimationFrame(gameLoop);
+    } else {
+      // Reopen shop for floor-based modes
+      openShop();
+    }
+  }
 }
 
 function renderShopWeapons(){
@@ -4506,7 +4879,7 @@ function renderShopContent(){
 // Upgrades persist via save.weaponUpgrades
 // Cost scales: 80 → 160 → 280 → 440 → 640 (per level, per stat)
 // ══════════════════════════════════════════════════════════════
-const WU_COSTS=[80,160,280,440,640]; // cost for levels 1-5
+const WU_COSTS=[320,640,1120,1760,2560]; // cost for levels 1-5 (4x original)
 const WU_MAX=5;
 
 // Get current upgrade levels for a weapon
@@ -4739,7 +5112,7 @@ function dieGame(){
   const mm=Math.floor(elapsed/60),ss=String(elapsed%60).padStart(2,'0');
   const statsEl=document.getElementById('deathStats');
   if(statsEl)statsEl.innerHTML=`
-    <div>Floor reached: <span>${gs.floor}</span></div>
+    <div>${gameMode==='openworld'?'Distance: <span>'+(gs.distanceMeters||0).toLocaleString()+'m</span>':'Floor reached: <span>'+gs.floor+'</span>'}</div>
     <div>Score: <span>${gs.score.toLocaleString()}</span></div>
     <div>Kills: <span>${gs.kills}</span></div>
     <div>Gold earned: <span>${gs.gold} \uD83E\uDE99</span></div>
@@ -4803,6 +5176,11 @@ function quitToMenu(doSave=true){
   equippedAbilities=[];shopBuyCount={};currentShopItems=null;
   ownedWeapons=['w_sword','w_dagger','w_bow'];hotbarWeapons=['w_sword','w_dagger','w_bow',null,null];activeWeaponSlot=0;_saveView='slots';
   const hb=document.getElementById('weaponHotbar');if(hb)hb.classList.add('hidden');
+  // Hide OW-specific HUD elements
+  owShopOpen=false;
+  const owWidget=document.getElementById('owShopWidget');if(owWidget)owWidget.style.display='none';
+  const distEl=document.getElementById('hudDistance');if(distEl)distEl.style.display='none';
+  const shopBtnEl=document.getElementById('hudOwShopBtn');if(shopBtnEl)shopBtnEl.style.display='none';
   stopMusic();
   activeShopTab='items';currentShopTab='items';keys={};
   canvas.style.display='none';
