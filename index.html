@@ -622,6 +622,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
   </div>
 </div>
 
+<!-- ☢ NUKE ENDING SCREEN -->
+<div id="nukeEndScreen" class="screen hidden" style="background:#000;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;overflow-y:auto">
+  <div style="max-width:700px;width:100%">
+    <div class="nuke-line" style="font-family:'Share Tech Mono',monospace;font-size:.55rem;color:#333;letter-spacing:.4em;margin-bottom:3rem">☢ &nbsp; TERMINAL EVENT LOGGED &nbsp; ☢</div>
+    <div class="nuke-line" style="font-family:'Cinzel Decorative',serif;font-size:clamp(1rem,3.5vw,2.2rem);color:#c0c0c0;letter-spacing:.15em;margin-bottom:2rem">THE DIMENSION BREAKS</div>
+    <div class="nuke-line" style="font-size:.8rem;color:#888;font-family:'Rajdhani',sans-serif;line-height:2;margin-bottom:2.5rem;max-width:540px;margin-left:auto;margin-right:auto">You pressed it. Of course you did. Everyone does, in the end.</div>
+    <div class="nuke-line" style="font-size:.78rem;color:#666;font-family:'Rajdhani',sans-serif;line-height:2;margin-bottom:2.5rem;max-width:560px;margin-left:auto;margin-right:auto">The warhead was never meant to be found. It was sealed here — in the deepest crack between dimensions — to prevent exactly this. The Abyss was not a dungeon. It was a cage. Built around it.</div>
+    <div class="nuke-line" style="font-size:.78rem;color:#555;font-family:'Rajdhani',sans-serif;line-height:2;margin-bottom:2.5rem;max-width:560px;margin-left:auto;margin-right:auto">When the device detonates, it does not destroy. It unmakes. The dimensional rift that held the Abyss — and every world tethered to it — collapses inward. Not with fire. Not with sound. Just silence, spreading in every direction at once.</div>
+    <div class="nuke-line" style="font-size:.78rem;color:#444;font-family:'Rajdhani',sans-serif;line-height:2;margin-bottom:2.5rem;max-width:560px;margin-left:auto;margin-right:auto">The monsters stop. The floors stop. The walls between worlds stop being walls. You feel yourself becoming something the universe no longer has a word for.</div>
+    <div class="nuke-line" style="font-size:.78rem;color:#333;font-family:'Rajdhani',sans-serif;line-height:2;margin-bottom:3rem;max-width:560px;margin-left:auto;margin-right:auto">There is no victory screen. There is no score. There is no next floor. There is only the knowledge that you found it, and you chose this — and somewhere in the unreachable dark, something ancient finally gets to rest.</div>
+    <div class="nuke-line" style="font-family:'Cinzel Decorative',serif;font-size:clamp(.6rem,1.5vw,.85rem);color:#222;letter-spacing:.35em;margin-bottom:3.5rem">— END OF ALL THINGS —</div>
+    <div class="nuke-line" id="nukeMenuBtn" style="margin-top:2rem">
+      <button class="btn" onclick="quitToMenu(false)" style="border-color:#1a1a1a;color:#1a1a1a;font-size:.65rem;background:transparent">↩ return to the silence</button>
+    </div>
+  </div>
+</div>
+
 <script>
 'use strict';
 // ============================================================
@@ -996,15 +1013,15 @@ function pick3Upgrades(){
 // ENEMY DEFS — gold reward scales with danger level (tier-based)
 // ============================================================
 const EDEFS={
-  goblin:   {hp:30,atk:6,  spd:2.0,r:12,score:50,  gold:3,  c1:'#4ade80',c2:'#16a34a'},
-  sprite:   {hp:20,atk:4,  spd:3.0,r:9, score:40,  gold:2,  c1:'#a78bfa',c2:'#7c3aed'},
-  orc:      {hp:90,atk:15, spd:1.4,r:17,score:150, gold:8,  c1:'#f97316',c2:'#92400e'},
-  archer:   {hp:38,atk:12, spd:1.6,r:11,score:120, gold:6,  c1:'#fbbf24',c2:'#b45309'},
-  leaper:   {hp:50,atk:18, spd:2.5,r:13,score:180, gold:9,  c1:'#f472b6',c2:'#be185d'},
-  demon:    {hp:70,atk:20, spd:2.6,r:14,score:300, gold:14, c1:'#ef4444',c2:'#7f1d1d'},
-  specter:  {hp:55,atk:24, spd:3.0,r:13,score:350, gold:15, c1:'#c4b5fd',c2:'#312e81'},
-  splitter: {hp:100,atk:14,spd:1.2,r:19,score:400, gold:18, c1:'#fb923c',c2:'#431407'},
-  warlord:  {hp:220,atk:30,spd:1.8,r:22,score:800, gold:32, c1:'#dc2626',c2:'#450a0a'}
+  goblin:   {hp:52,atk:11, spd:2.4,r:12,score:50,  gold:4,  c1:'#4ade80',c2:'#16a34a'},
+  sprite:   {hp:36,atk:8,  spd:3.5,r:9, score:40,  gold:3,  c1:'#a78bfa',c2:'#7c3aed'},
+  orc:      {hp:160,atk:26,spd:1.7,r:17,score:150, gold:11, c1:'#f97316',c2:'#92400e'},
+  archer:   {hp:68,atk:22, spd:1.9,r:11,score:120, gold:9,  c1:'#fbbf24',c2:'#b45309'},
+  leaper:   {hp:90,atk:32, spd:3.0,r:13,score:180, gold:13, c1:'#f472b6',c2:'#be185d'},
+  demon:    {hp:125,atk:36,spd:3.0,r:14,score:300, gold:20, c1:'#ef4444',c2:'#7f1d1d'},
+  specter:  {hp:100,atk:42,spd:3.5,r:13,score:350, gold:22, c1:'#c4b5fd',c2:'#312e81'},
+  splitter: {hp:180,atk:26,spd:1.5,r:19,score:400, gold:26, c1:'#fb923c',c2:'#431407'},
+  warlord:  {hp:390,atk:55,spd:2.2,r:22,score:800, gold:46, c1:'#dc2626',c2:'#450a0a'}
 };
 // MEGA BOSSES — appear after 10 minutes of playtime, not every 5 floors
 // Boss index escalates the longer you've played
@@ -1215,7 +1232,14 @@ function makePlatformLevel(floor, gs){
     if(cpos) items.push({x:cpos.x,y:cpos.y-4,type:'chest',collected:false,tier:'bronze'});
   }
 
-  // Enemies
+  // ── NUCLEAR DEVICE — spawns once on floors 50+, hidden deep in the level ──
+  if(floor>=50 && Math.random()<0.08){
+    const nukeX=Math.floor(W*0.6+Math.random()*(W*0.3));
+    const nukePos=safeItem(nukeX,GROUND);
+    if(nukePos) items.push({x:nukePos.x,y:nukePos.y-8,type:'nuke',collected:false});
+  }
+
+  // Regular enemies
   const enemies=[];
   const pool=getEnemyPool(floor);
   const scale=getEnemyScale(floor);
@@ -2162,6 +2186,9 @@ function update(dt){
           }
           showNotif(`📦 Chest! +${gold} gold`,'#b45309');
         }
+      }else if(it.type==='nuke'){
+        // ☢ NUCLEAR DEVICE FOUND — detonate immediately
+        triggerNukeEnding(gs);
       }
     }
   });
@@ -2344,7 +2371,8 @@ function triggerUpgrade(gs,p){
 // PLAYER DEATH — called ONCE, halts everything
 // ============================================================
 function doPlayerDeath(gs){
-  if(gs.dead)return;// strict single-fire guard
+  if(gs.dead)return;
+  if(_minigunInterval){clearInterval(_minigunInterval);_minigunInterval=null;}
   gs.dead=true;
   gs.player.hp=0;// force to exactly 0 — no residual HP
   gs.player.invincible=0;
@@ -2356,6 +2384,51 @@ function doPlayerDeath(gs){
   // Render one last frame so player sees the moment
   render();
   setTimeout(()=>dieGame(),600);
+}
+
+// ============================================================
+// NUKE ENDING — dimension collapse
+// ============================================================
+function triggerNukeEnding(gs){
+  cancelAnimationFrame(animFrame); animFrame=null;
+  if(gs){gs.dead=true;}
+  stopMusic(true);
+  // Screen shake before blackout
+  const cvs=document.getElementById('gameCanvas');
+  let shakeT=0;
+  const shakeIv=setInterval(()=>{
+    shakeT+=60;
+    cvs.style.transform=`translate(${(Math.random()-.5)*14}px,${(Math.random()-.5)*14}px)`;
+    if(shakeT>=900){clearInterval(shakeIv);cvs.style.transform='';}
+  },60);
+  // Flash + sound cascade
+  playSfx('explosion');
+  setTimeout(()=>playSfx('bossRoar'),400);
+  setTimeout(()=>playSfx('explosion'),700);
+  // Show nuke screen after brief dramatic pause
+  setTimeout(()=>{
+    document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+    document.getElementById('hud').classList.add('hidden');
+    document.getElementById('weaponHotbar').classList.add('hidden');
+    canvas.style.display='none';
+    const scr=document.getElementById('nukeEndScreen');
+    scr.classList.remove('hidden');
+    // Typewriter reveal for story lines
+    const lines=scr.querySelectorAll('.nuke-line');
+    lines.forEach((l,i)=>{
+      l.style.opacity='0';
+      setTimeout(()=>{
+        l.style.transition='opacity 1.4s';
+        l.style.opacity='1';
+      }, i*1800 + 500);
+    });
+    // Save stats
+    if(gs){
+      if(gs.score>save.highScore){save.highScore=gs.score;writeSave();}
+      save.totalKills=(save.totalKills||0)+gs.kills;
+      writeSave();
+    }
+  }, 1200);
 }
 
 // ============================================================
@@ -2497,6 +2570,45 @@ function render(){
     }
 
     const clr=it.type==='hp'?'#10b981':it.type==='mp'?'#3b82f6':'#f59e0b';
+
+    // ── NUKE ITEM RENDER ──
+    if(it.type==='nuke'){
+      const nb=Math.sin(Date.now()*.005)*3;
+      const np=.5+Math.sin(Date.now()*.006)*.5;
+      ctx.save();
+      ctx.translate(it.x, it.y+nb);
+      // Outer danger glow
+      ctx.shadowColor='#ef4444'; ctx.shadowBlur=20+14*np;
+      // Bomb body
+      const bg2=ctx.createRadialGradient(-2,-2,2,0,0,14);
+      bg2.addColorStop(0,'#78350f'); bg2.addColorStop(1,'#1a0800');
+      ctx.fillStyle=bg2;
+      ctx.beginPath(); ctx.arc(0,0,14,0,Math.PI*2); ctx.fill();
+      // Radiation symbol
+      ctx.strokeStyle='#ef4444'; ctx.lineWidth=2.2;
+      ctx.beginPath(); ctx.arc(0,0,5,0,Math.PI*2); ctx.stroke();
+      for(let s=0;s<3;s++){
+        const a=s*(Math.PI*2/3)-Math.PI/2;
+        ctx.beginPath();
+        ctx.arc(0,0,11,a+0.4,a+Math.PI/3-0.4);
+        ctx.arc(0,0,5,a+Math.PI/3-0.4,a+0.4,true);
+        ctx.closePath(); ctx.stroke();
+        ctx.fillStyle='#ef444488'; ctx.fill();
+      }
+      // Pulsing warning ring
+      ctx.globalAlpha=0.4*np;
+      ctx.strokeStyle='#ef4444'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(0,0,18+4*np,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=1;
+      // Label
+      ctx.fillStyle='#fbbf24'; ctx.font='bold 7px sans-serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.shadowColor='#ef4444'; ctx.shadowBlur=6;
+      ctx.fillText('NUKE',0,26);
+      ctx.restore();
+      return;
+    }
+
     ctx.save();ctx.shadowColor=clr;ctx.shadowBlur=8+5*pulse2;
     ctx.fillStyle=clr;ctx.beginPath();ctx.arc(it.x,it.y,9,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#fff';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
@@ -3352,7 +3464,16 @@ function updateHUD(){
   const depthEl=document.getElementById('hudDepth');
   if(depthEl){
     const f=gs.floor;
-    if(gameMode==='thor'){
+    // Check if a nuke is on this floor
+    const nukeOnFloor = gs.level && gs.level.items && gs.level.items.some(it=>it.type==='nuke'&&!it.collected);
+    if(nukeOnFloor){
+      depthEl.textContent='☢ NUCLEAR DEVICE DETECTED — PROCEED WITH CAUTION';
+      depthEl.style.color='#ef4444';
+      depthEl.style.animation='pulse 0.8s infinite';
+    } else {
+      depthEl.style.color='';
+      depthEl.style.animation='';
+      if(gameMode==='thor'){
       // Thor mode: show next named boss
       const thorBossFloors=[25,50,75,100,150,200];
       const next=thorBossFloors.find(fl=>fl>f);
@@ -3374,6 +3495,7 @@ function updateHUD(){
       else if(nextMega-f<=10&&nextMega-f>0)depthEl.textContent=`⚠ MEGA BOSS in ${nextMega-f} floors`;
       else depthEl.textContent=`THREAT×${getEnemyScale(f).toFixed(1)}  BOSS@${nextBoss}`;
     }
+    } // end nukeOnFloor else
   }
   // Mega boss bar
   const bb=document.getElementById('bossBar');
@@ -3668,18 +3790,26 @@ const WEAPONS = [
   {id:'w_dagger',   name:'Twin Daggers', icon:'🗡️',  type:'melee',   dmgMult:0.18, cd:220,  hits:2, mp:0,  range:42,  desc:'Fast but very weak each hit. Only shines with lots of ATK.',        free:true},
   {id:'w_bow',      name:'Hunter Bow',   icon:'🏹',  type:'ranged',  dmgMult:0.40, cd:650,  hits:1, mp:0,  range:999, desc:'Starter ranged. Weak — buy upgrades to make useful.',               free:true},
   {id:'w_spear',    name:'Iron Spear',   icon:'🔱',  type:'melee',   dmgMult:0.70, cd:550,  hits:1, mp:0,  range:105, desc:'Reach out and pierce! Longer range than sword, great for poking enemies.', free:true},
-  {id:'w_crossbow', name:'Crossbow',     icon:'🔫',  type:'ranged',  dmgMult:0.80, cd:1200, hits:1, mp:5,  range:999, desc:'Piercing bolt. Slow reload. Decent mid-tier ranged.',               cost:320},
-  {id:'w_staff',    name:'Arcane Staff', icon:'🪄',  type:'magic',   dmgMult:0.70, cd:700,  hits:1, mp:11, range:999, desc:'Magic piercing bolt. MP costs add up fast.',                   cost:380},
-  {id:'w_bomb',     name:'Bomb',         icon:'💣',  type:'thrown',  dmgMult:1.10, cd:2200, hits:1, mp:0,  range:200, desc:'Big AoE but very long cooldown. Plan ahead.',               cost:280},
-  {id:'w_greataxe', name:'Great Axe',    icon:'🪓',  type:'melee',   dmgMult:1.05, cd:1050, hits:1, mp:3,  range:80,  desc:'AoE cleave. High floor damage when fully upgraded.',                 cost:420},
-  {id:'w_wand',     name:'Chaos Wand',   icon:'✨',  type:'magic',   dmgMult:0.38, cd:380,  hits:3, mp:14, range:999, desc:'3-bolt spread. Low damage per bolt, eats MP fast.',          cost:450},
-  {id:'w_shield',   name:'War Shield',   icon:'🛡️',  type:'tool',    dmgMult:0.30, cd:1000, hits:1, mp:8,  range:55,  desc:'Grants brief invincibility and shoves enemies.',            cost:350},
-  {id:'w_hammer',   name:'Warhammer',    icon:'🔨',  type:'melee',   dmgMult:1.20, cd:1400, hits:1, mp:0,  range:68,  desc:'Big damage + stun. Extremely slow — plan your swings.',                  cost:550},
-  {id:'w_boomerang',name:'Boomerang',    icon:'🪃',  type:'ranged',  dmgMult:0.55, cd:850,  hits:2, mp:4,  range:999, desc:'Hits going out AND coming back. Mouse-aimed.',              cost:400},
-  // ── MJÖLNIR — powerful divine hammer, NOT a one-shot ──
+  {id:'w_crossbow', name:'Crossbow',     icon:'🔫',  type:'ranged',  dmgMult:0.80, cd:1200, hits:1, mp:5,  range:999, desc:'Piercing bolt. Slow reload. Decent mid-tier ranged.',               cost:620},
+  {id:'w_staff',    name:'Arcane Staff', icon:'🪄',  type:'magic',   dmgMult:0.70, cd:700,  hits:1, mp:11, range:999, desc:'Magic piercing bolt. MP costs add up fast.',                   cost:740},
+  {id:'w_bomb',     name:'Bomb',         icon:'💣',  type:'thrown',  dmgMult:1.10, cd:2200, hits:1, mp:0,  range:200, desc:'Big AoE but very long cooldown. Plan ahead.',               cost:560},
+  {id:'w_greataxe', name:'Great Axe',    icon:'🪓',  type:'melee',   dmgMult:1.05, cd:1050, hits:1, mp:3,  range:80,  desc:'AoE cleave. High floor damage when fully upgraded.',                 cost:840},
+  {id:'w_wand',     name:'Chaos Wand',   icon:'✨',  type:'magic',   dmgMult:0.38, cd:380,  hits:3, mp:14, range:999, desc:'3-bolt spread. Low damage per bolt, eats MP fast.',          cost:900},
+  {id:'w_shield',   name:'War Shield',   icon:'🛡️',  type:'tool',    dmgMult:0.30, cd:1000, hits:1, mp:8,  range:55,  desc:'Grants brief invincibility and shoves enemies.',            cost:700},
+  {id:'w_hammer',   name:'Warhammer',    icon:'🔨',  type:'melee',   dmgMult:1.20, cd:1400, hits:1, mp:0,  range:68,  desc:'Big damage + stun. Extremely slow — plan your swings.',                  cost:1050},
+  {id:'w_boomerang',name:'Boomerang',    icon:'🪃',  type:'ranged',  dmgMult:0.55, cd:850,  hits:2, mp:4,  range:999, desc:'Hits going out AND coming back. Mouse-aimed.',              cost:780},
+  // ── AIRSTRIKE — massive area bombardment, 40s cooldown ──
+  {id:'w_airstrike',name:'Airstrike',    icon:'🛩️',  type:'airstrike',dmgMult:6.0, cd:40000,hits:1, mp:30, range:999,
+   desc:'Call in a devastating air bombardment — 12 bombs rain across the entire level in 2 seconds. Clears rooms. 40s cooldown, 30 MP.',
+   cost:3500},
+  // ── MINIGUN — 300 rapid low-damage bullets ──
+  {id:'w_minigun',  name:'Minigun',      icon:'🔰',  type:'minigun', dmgMult:0.04, cd:18000,hits:1, mp:20, range:999,
+   desc:'Fires 300 rapid bullets over 8 seconds. Each bullet is weak, together they shred anything. 18s cooldown, 20 MP.',
+   cost:2800},
+  // ── MJÖLNIR — god-hammer, now a normal shop item ──
   {id:'w_mjolnir', name:'Mjölnir', icon:'⚡', type:'divine', dmgMult:8.0, cd:8000, hits:1, mp:25, range:160,
-   desc:'The God-Hammer of Thor. Massive AoE lightning strike — deals 800% ATK to ALL nearby enemies and stuns them. 8s cooldown, costs 25 MP. Devastating but not a one-shot.',
-   mjolnir:true, cost:500000000},
+   desc:'The God-Hammer of Thor. Massive AoE lightning strike — deals 800% ATK to ALL nearby enemies and stuns them. 8s cooldown, costs 25 MP.',
+   cost:1000000},
   // ── CHARACTER SIGNATURE WEAPONS (free, locked to each class) ──
   {id:'w_sig_hunter', name:"Ace of Spades",  icon:'🔫', type:'ranged', dmgMult:0.95, cd:380,  hits:1, mp:0, range:999, desc:'Hunter signature. Hand cannon — every 3rd shot guaranteed crit and refunds 10 HP.', charLock:'hunter', free:true},
   {id:'w_sig_titan',  name:'Helm of Saint-14',icon:'🪖', type:'melee',  dmgMult:1.40, cd:900,  hits:1, mp:0, range:78,  desc:'Titan signature. Headbutt slam — blinds all hit enemies for 1.5s and knocks them away.', charLock:'titan', free:true},
@@ -3691,6 +3821,7 @@ const WEAPONS = [
 let ownedWeapons = ['w_sword','w_dagger','w_spear','w_bow']; // default free weapons
 let hotbarWeapons = ['w_sword','w_dagger','w_spear','w_bow', null]; // slots 1-5
 let activeWeaponSlot = 0; // 0-indexed
+let _minigunInterval = null; // active minigun firing interval
 
 function getWeapon(id){ return WEAPONS.find(w=>w.id===id); }
 function getActiveWeapon(){ return hotbarWeapons[activeWeaponSlot] ? getWeapon(hotbarWeapons[activeWeaponSlot]) : getWeapon('w_sword'); }
@@ -3715,6 +3846,7 @@ function buildWeaponHotbar(){
 }
 
 function selectWeaponSlot(i){
+  if(_minigunInterval){clearInterval(_minigunInterval);_minigunInterval=null;}
   activeWeaponSlot = i;
   buildWeaponHotbar();
 }
@@ -3722,6 +3854,7 @@ function selectWeaponSlot(i){
 function handleWeaponHotkey(keyNum){ // keyNum 1-5
   const idx = keyNum - 1;
   if(idx >= 0 && idx < 5){
+    if(_minigunInterval){clearInterval(_minigunInterval);_minigunInterval=null;}
     activeWeaponSlot = idx;
     buildWeaponHotbar();
     const w = getActiveWeapon();
@@ -3790,7 +3923,7 @@ function buyArmor(charId,slot,tier,cost){
   const gs=gameState;
   // Allow armor purchase if we have a save slot active (pre-run equip is free)
   const isPreRun=!gs;
-  if(!isPreRun&&gs.gold<cost){showNotif('Not enough gold!','#ef4444');return;}
+  if(!isPreRun&&cost>0&&gs.gold<cost){showNotif('Not enough gold!','#ef4444');return;}
   if(!isPreRun) gs.gold-=cost; // pre-run: equipping is free
   if(!save.equippedArmor)save.equippedArmor={};
   if(!save.equippedArmor[charId])save.equippedArmor[charId]={head:0,chest:0,legs:0,feet:0};
@@ -3942,6 +4075,62 @@ function useActiveWeapon(gs, p){
       addFloat(gs,p.x,p.y-40,'BLOCK!','#06b6d4');
       playSfx('block');
     }
+  } else if(w.type === 'airstrike'){
+    // ── AIRSTRIKE — 12 bombs rain across the level ──
+    addFloat(gs,p.x,p.y-50,'✈ AIRSTRIKE CALLED!','#ef4444');
+    showNotif('✈ AIRSTRIKE INCOMING!','#ef4444');
+    const lvlW = gs.level.W * TILE;
+    for(let b=0;b<12;b++){
+      const delay = b * 160;
+      setTimeout(()=>{
+        if(!gameState) return;
+        const bx = TILE*4 + Math.random()*(lvlW - TILE*8);
+        const by = (GROUND-1)*TILE;
+        // Bomb streak visual
+        gs.projectiles.push({x:bx,y:-60,vx:0,vy:28,owner:'player',dmg:0,r:8,life:600,color:'#ef4444',isBomb:true,_airBomb:true,_impactX:bx,_impactY:by});
+        setTimeout(()=>{
+          if(!gameState) return;
+          const cur=[...gameState.level.enemies,...(gameState.level.megaBoss&&gameState.level.megaBoss.alive?[gameState.level.megaBoss]:[])];
+          cur.forEach(e=>{if(!e.alive)return;if(Math.hypot(bx-e.x,by-e.y)<110)hurtEnemy(gameState,gameState.player,e,baseDmg);});
+          spawnBurst(gameState.particles,bx,by,'#ef4444ff',35,10);
+          spawnBurst(gameState.particles,bx,by,'#f97316cc',20,7);
+          spawnBurst(gameState.particles,bx,by,'#fbbf24aa',15,5);
+          addFloat(gameState,bx,by-30,'💥 BOOM','#f97316');
+          playSfx('explosion');
+        },500);
+      },delay);
+    }
+    playSfx('throw');
+
+  } else if(w.type === 'minigun'){
+    // ── MINIGUN — fires 300 rapid bullets over 8 seconds ──
+    if(_minigunInterval){clearInterval(_minigunInterval);_minigunInterval=null;}
+    addFloat(gs,p.x,p.y-40,'🔰 MINIGUN!','#06b6d4');
+    showNotif('🔰 MINIGUN ENGAGED — 300 rounds!','#06b6d4');
+    let bulletsFired=0;
+    const totalBullets=300;
+    const _firedFromSlot=activeWeaponSlot;
+    _minigunInterval=setInterval(()=>{
+      if(!gameState||bulletsFired>=totalBullets||activeWeaponSlot!==_firedFromSlot){
+        clearInterval(_minigunInterval);_minigunInterval=null;return;
+      }
+      bulletsFired++;
+      const gp=gameState.player;
+      const gdx=mouse.x-gp.x, gdy=mouse.y-(gp.y-8);
+      const glen=Math.hypot(gdx,gdy)||1;
+      const spread=(Math.random()-0.5)*0.25;
+      const nx=gdx/glen*Math.cos(spread)-gdy/glen*Math.sin(spread);
+      const ny=gdx/glen*Math.sin(spread)+gdy/glen*Math.cos(spread);
+      gameState.projectiles.push({
+        x:gp.x,y:gp.y-8,
+        vx:nx*26,vy:ny*26,
+        owner:'player',dmg:Math.round(baseDmg),r:3,life:700,
+        color:'#06b6d4',_minigunBullet:true
+      });
+      if(bulletsFired%50===0) playSfx('dagger');
+    },27);
+    playSfx('crossbow');
+
   } else if(w.type === 'divine'){
     if(w.id==='w_mjolnir'){
       // ⚡ MJÖLNIR — massive AoE lightning hammer throw, NOT a one-shot
@@ -4066,9 +4255,9 @@ function tickWeaponCooldowns(p, dt){
 // Add a weapon to inventory from shop
 function buyWeapon(wid){
   const gs=gameState; if(!gs) return;
-  const w=getWeapon(wid); if(!w||!w.cost) return;
+  const w=getWeapon(wid); if(!w||w.free) return;
   if(ownedWeapons.includes(wid)){showNotif('Already own '+w.name+'!','#f59e0b');return;}
-  if(gs.gold<w.cost){showNotif('Not enough gold! 🪙','#ef4444');return;}
+  if(w.cost>0 && gs.gold<w.cost){showNotif('Not enough gold! 🪙','#ef4444');return;}
   gs.gold -= w.cost;
   ownedWeapons.push(wid);
   // Auto-equip to first empty hotbar slot
@@ -4084,8 +4273,8 @@ function buyWeapon(wid){
 function buyMjolnir(){
   const gs=gameState; if(!gs){showNotif('Start a run first!','#ef4444');return;}
   if(ownedWeapons.includes('w_mjolnir')){showNotif('⚡ You already wield Mjölnir!','#fbbf24');return;}
-  const cost=500000000;
-  if(gs.gold<cost){
+  const cost=1000000;
+  if(cost>0 && gs.gold<cost){
     showNotif(`Need ${(cost-gs.gold).toLocaleString()} more 🪙!`,'#ef4444');
     return;
   }
@@ -4112,39 +4301,19 @@ function renderShopWeapons(){
   el.innerHTML=`<div style="max-width:860px;width:100%">
   <div style="font-size:.65rem;color:var(--muted);text-align:center;margin-bottom:.8rem;font-family:'Share Tech Mono',monospace">USE KEYS 1–5 IN-GAME TO SWITCH WEAPONS · BUY TO ADD TO INVENTORY</div>
 
-  <!-- ⚡ MJÖLNIR LEGENDARY ANNOUNCEMENT BANNER -->
-  <div style="background:linear-gradient(135deg,#1a1200,#2d1f00,#1a1200);border:2px solid #fbbf24;border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:1.1rem;position:relative;overflow:hidden;box-shadow:0 0 32px #fbbf2444">
-    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,#fbbf2411,transparent 70%);pointer-events:none"></div>
+  <!-- ☢ NUCLEAR DEVICE DISCOVERY BANNER -->
+  <div style="background:linear-gradient(135deg,#0a0000,#1a0505,#0a0000);border:2px solid #ef4444;border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:1.1rem;position:relative;overflow:hidden;box-shadow:0 0 32px #ef444444">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,#ef444411,transparent 70%);pointer-events:none"></div>
     <div style="display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap">
-      <div style="font-size:3.2rem;filter:drop-shadow(0 0 16px #fbbf24);animation:pulse 1.5s infinite">⚡</div>
+      <div style="font-size:3rem;filter:drop-shadow(0 0 16px #ef4444);animation:pulse 1s infinite">☢</div>
       <div style="flex:1;min-width:200px">
-        <div style="font-size:.52rem;color:#92400e;font-family:'Share Tech Mono',monospace;letter-spacing:.2em;margin-bottom:.2rem">◈ LEGENDARY WEAPON ANNOUNCEMENT ◈</div>
-        <div style="font-family:'Cinzel Decorative',serif;font-size:.9rem;color:#fbbf24;letter-spacing:.18em;margin-bottom:.25rem;text-shadow:0 0 12px #fbbf2499">MJÖLNIR — GOD-HAMMER OF THOR</div>
-        <div style="font-size:.62rem;color:#fde68a;line-height:1.6;margin-bottom:.5rem">Forged in the heart of a dying star by the dwarves of Nidavellir. Throws a lightning hammer that detonates in a massive AoE — dealing 800% ATK to every enemy in range, knocking them back and stunning them. Bosses take reduced damage. Powerful, not godlike.</div>
-        <div style="font-size:.55rem;color:#92400e;font-family:'Share Tech Mono',monospace;line-height:1.8;margin-bottom:.6rem">
-          ⚡ 800% AoE damage · 8s cooldown · 25 MP · 160px blast radius · Normally found in the <b style="color:#fbbf24">Vault of Asgard</b>
+        <div style="font-size:.52rem;color:#7f1d1d;font-family:'Share Tech Mono',monospace;letter-spacing:.2em;margin-bottom:.2rem">◈ CLASSIFIED INTEL — DEEP RUN DISCOVERY ◈</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:.85rem;color:#ef4444;letter-spacing:.15em;margin-bottom:.25rem;text-shadow:0 0 12px #ef444499">NUCLEAR DEVICE — THE DIMENSION BREAKER</div>
+        <div style="font-size:.62rem;color:#fca5a5;line-height:1.65;margin-bottom:.4rem">Somewhere in the deep floors (Floor 50+), a decommissioned nuclear warhead sits abandoned — left behind by those who came before you. They never found it. Or perhaps they did... and chose not to touch it.</div>
+        <div style="font-size:.60rem;color:#ef4444;line-height:1.65;margin-bottom:.4rem">If detonated, the dimensional rift holding the Abyss together will shatter. The walls between worlds will collapse. <b style="color:#fbbf24">The run ends instantly</b> — but so does everything else.</div>
+        <div style="font-size:.55rem;color:#7f1d1d;font-family:'Share Tech Mono',monospace;line-height:2;border-top:1px solid #ef444422;padding-top:.4rem">
+          ☢ Spawns randomly late-game · Walk into it to detonate · <b style="color:#ef4444">IRREVERSIBLE</b> · Ends the story forever
         </div>
-        ${mjOwned ? `
-          <div style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:#10b981;letter-spacing:.1em">⚡ YOU WIELD MJÖLNIR — WORTHY!</div>
-        ` : (()=>{
-          const cost=500000000;
-          const gold=gameState?gameState.gold:0;
-          const pct=Math.min(100,(gold/cost)*100);
-          const canAfford=gold>=cost;
-          return `<div style="margin-bottom:.4rem">
-            <div style="display:flex;justify-content:space-between;font-size:.52rem;color:#78350f;font-family:'Share Tech Mono',monospace;margin-bottom:.2rem">
-              <span>YOUR GOLD: <b style="color:#fbbf24">${gold.toLocaleString()} 🪙</b></span>
-              <span>COST: <b style="color:#ef4444">500,000,000 🪙</b></span>
-            </div>
-            <div style="height:6px;background:#1a0e00;border-radius:3px;overflow:hidden;border:1px solid #78350f44">
-              <div style="height:100%;width:${pct.toFixed(2)}%;background:linear-gradient(90deg,#b45309,#fbbf24);border-radius:3px;transition:width .3s"></div>
-            </div>
-            <div style="font-size:.48rem;color:#78350f;font-family:'Share Tech Mono',monospace;margin-top:.2rem;text-align:right">${pct.toFixed(4)}% funded — earn gold by killing enemies deeper floors</div>
-          </div>
-          <button onclick="buyMjolnir()" ${canAfford?'':'disabled'} style="padding:.55rem 1.3rem;background:${canAfford?'linear-gradient(135deg,#f59e0b,#fbbf24)':'rgba(120,53,15,.3)'};border:${canAfford?'none':'1px solid #78350f44'};border-radius:8px;color:${canAfford?'#1a0800':'#78350f'};font-family:'Cinzel Decorative',serif;font-size:.65rem;cursor:${canAfford?'pointer':'not-allowed'};font-weight:900;letter-spacing:.08em;${canAfford?'box-shadow:0 0 18px #fbbf2488;':'opacity:.5'}">
-            ${canAfford?'⚡ PURCHASE MJÖLNIR':'⚡ INSUFFICIENT GOLD'}
-          </button>`;
-        })()}
       </div>
     </div>
   </div>
@@ -4178,9 +4347,9 @@ function renderShopWeapons(){
     }).join('')}
     </div>
   </div>
-  <!-- All weapons for purchase (hide free/sig/mjolnir) -->
+  <!-- All weapons for purchase (hide free/sig weapons only) -->
   <div style="display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center">
-  ${WEAPONS.filter(w=>!w.free&&!w.mjolnir&&(!w.charLock||w.charLock===charId)).map(w=>{
+  ${WEAPONS.filter(w=>!w.free&&(!w.charLock||w.charLock===charId)).map(w=>{
     const owned=ownedWeapons.includes(w.id);
     const afford=!gs||gs.gold>=w.cost;
     return`<div onclick="buyWeapon('${w.id}')" style="width:140px;background:var(--panel);border:1px solid ${owned?'#10b98144':'var(--border)'};border-radius:8px;padding:.65rem;text-align:center;cursor:${owned?'default':'pointer'};opacity:${owned?'.65':'1'};transition:border-color .15s">
@@ -4372,7 +4541,7 @@ function buyWeaponUpgrade(wid,stat){
   const gs=gameState;if(!gs)return;
   const cost=wuNextCost(wid,stat);
   if(cost===null){showNotif('Already maxed!','#64748b');return;}
-  if(gs.gold<cost){showNotif('Not enough gold!','#ef4444');return;}
+  if(cost>0 && gs.gold<cost){showNotif('Not enough gold!','#ef4444');return;}
   gs.gold-=cost;
   if(!save.weaponUpgrades)save.weaponUpgrades={};
   if(!save.weaponUpgrades[wid])save.weaponUpgrades[wid]={dmg:0,cd:0,hits:0,range:0};
@@ -4421,7 +4590,7 @@ function renderShopUpgrades(){
       const lvl=u[stat]||0;
       const cost=wuNextCost(wid,stat);
       const maxed=cost===null;
-      const canAfford=!maxed&&gold>=cost;
+      const canAfford=!maxed&&(cost===0||gold>=cost);
       const clickFn2 = maxed ? 'wuDeny("Maxed!")' : canAfford ? `buyWeaponUpgrade('${wid}','${stat}')` : `wuDeny('Need ${cost-gold}g more!')`;
       return `<div onclick="${clickFn2}"
         style="flex:1;min-width:85px;padding:.5rem .4rem;background:${maxed?'rgba(100,116,139,.08)':canAfford?'rgba(6,182,212,.08)':'rgba(0,0,0,.3)'};
@@ -4475,7 +4644,7 @@ function buyShopItem(id){
   const gs=gameState;if(!gs||!currentShopItems)return;
   const item=currentShopItems.find(i=>i.id===id);if(!item)return;
   const cost=getShopCost(item);
-  if(gs.gold<cost){showNotif('Not enough gold! 🪙','#ef4444');return;}
+  if(cost>0 && gs.gold<cost){showNotif('Not enough gold! 🪙','#ef4444');return;}
   gs.gold-=cost;shopBuyCount[item.id]=(shopBuyCount[item.id]||0)+1;
   item.apply(gs.player);showNotif('✓ '+item.name+'!','#f59e0b');
   renderShopItems();
@@ -4521,6 +4690,7 @@ function openShop(){
 // ============================================================
 function pauseGame(){
   if(!gameState||gameState.dead)return;
+  if(_minigunInterval){clearInterval(_minigunInterval);_minigunInterval=null;}
   paused=true;
   mouse.left=false;mouse.right=false;mouse.lj=false;mouse.rj=false;
   cancelAnimationFrame(animFrame);animFrame=null;
@@ -4604,6 +4774,7 @@ function _afterQuit(){
   _refreshTitleContinue();
 }
 function quitToMenu(doSave=true){
+  if(_minigunInterval){clearInterval(_minigunInterval);_minigunInterval=null;}
   const gs=gameState;
   if(doSave&&gs){
     const kills=gs.kills||0;
